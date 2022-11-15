@@ -24,5 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Compile and Install
         run: |
-          cmd="mvn install -B -ntp -DskipTests  -pl \!flow-plugins/flow-gradle-plugin"
-          eval $cmd -T 2C -q || eval $cmd
+          set -x
+          pwd 
+          ls -l
+          mvn install -B -ntp -Pproduction -DskipTests
