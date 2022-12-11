@@ -1,3 +1,4 @@
+WIP
 # Project Base for a Vaadin application
 
 This project can be used as a starting point to create your own Vaadin application.
