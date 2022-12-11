@@ -15,16 +15,18 @@ jobs:
       - uses: actions-cool/check-user-permission@main
         id: checkUser
         with:
+          username: ${{github.triggering_actor}}
           require: 'write'
-      - name: close
-        if: steps.checkUser.outputs.check-result == 'false'
-        run: echo "${{ github.actor }} is an external user" | tee -a $GITHUB_STEP_SUMMARY && exit 1
+      - name: Check contributor access
+        if: ${{ steps.checkUser.outputs.require-result != 'true' }}
+        run: |
+          echo "🚫 **${{ github.actor }}** is an external contributor, a **${{github.repository}}** team member needs to re-run this build" \
+          | tee -a $GITHUB_STEP_SUMMARY && exit 1
       - name: Check secrets
         run: |
-          TB_LICENSE="${{secrets.TB_LICENSE}}"
-          [ -z "$TB_LICENSE" ] \
-            && echo "::error::!! ERROR NO TB_LICENSE: Check that this repo has a valid TB_LICENSE secret !!" \
-            && exit 1 || exit 0
+          [ -z "${{secrets.TB_LICENSE}}" ] \
+            && echo "🚫 **TB_LICENSE** is not defined, check that this repo has a valid secret" \
+            | tee -a $GITHUB_STEP_SUMMARY && exit 1 || exit 0
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
