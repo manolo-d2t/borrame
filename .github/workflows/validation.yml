@@ -12,7 +12,14 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-22.04
     steps:
-      - name: Check Segit screts
+      - uses: actions-cool/check-user-permission@main
+        id: checkUser
+        with:
+          require: 'write'
+      - name: close
+        if: steps.checkUser.outputs.check-result == 'false'
+        run: echo "${{ github.actor }} is an external user" | tee -a $GITHUB_STEP_SUMMARY && exit 1
+      - name: Check secrets
         run: |
           TB_LICENSE="${{secrets.TB_LICENSE}}"
           [ -z "$TB_LICENSE" ] \
