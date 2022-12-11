@@ -16,6 +16,9 @@ jobs:
         id: checkUser
         with:
           require: 'write'
+      - run: echo "${{ toJSON(github) }}"
+      - run: echo "${{ toJSON(steps) }}"
+      - run: echo "${{ toJSON(job) }}"
       - name: close
         if: steps.checkUser.outputs.check-result == 'false'
         run: echo "${{ github.actor }} is an external user" | tee -a $GITHUB_STEP_SUMMARY && exit 1
